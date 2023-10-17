@@ -83,6 +83,11 @@ class Lab2Test(unittest.TestCase):
 		expected_result = [['e', 's'], ['e'], []]
 		#self.assertEqual(filter_strings_by_ascii(x, strings, flag), expected_result)
 	
+	def test_combine_elements(self):
+		lists = [[1, 2, 3], [5, 6, 7], ["a", "b", "c"]]
+		expected_combined = [(1, 5, "a"), (2, 6, "b"), (3, 7, "c")]
+		self.assertEqual(combine_elements(*lists), expected_combined)
+	
 	def test_order_tuples(self):
 		tuples = [('abc', 'bcd'), ('abc', 'zza')]
 		expected_result = [('abc', 'zza'), ('abc', 'bcd')]
@@ -92,6 +97,7 @@ class Lab2Test(unittest.TestCase):
 		words = ['ana', 'banana', 'carte', 'arme', 'parte']
 		expected_groups = [['ana', 'banana'], ['carte', 'parte'], ['arme']]
 		self.assertEqual(group_by_rhyme(words), expected_groups)
+
     
 
 

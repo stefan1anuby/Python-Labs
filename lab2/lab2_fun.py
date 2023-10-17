@@ -88,6 +88,11 @@ def filter_strings_by_ascii(x=1, strings=[], flag=True):
 	]
 	return filtered_strings
 
+from itertools import zip_longest
+
+def combine_elements(*lists):
+    return list(zip_longest(*lists, fillvalue=None))
+
 def order_tuples(tuples):
     return sorted(tuples, key=lambda x: x[1][2])
 

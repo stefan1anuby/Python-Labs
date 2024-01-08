@@ -1,16 +1,45 @@
+
+
 import pika, sys, os , json , time
 from pywebcopy import save_webpage
+
+"""
+Environment Variables:
+    RABBITMQ_HOST: The host of the RabbitMQ server. Defaults to 'localhost'.
+    RABBITMQ_QUEUE: The RabbitMQ queue name to consume messages from. Defaults to 'workerpool'.
+"""
 
 rabbitmq_host = os.environ.get('RABBITMQ_HOST','localhost')
 rabbitmq_queue = os.environ.get('RABBITMQ_QUEUE','workerpool')
 
 def checkDirIsEmpty(dir_path):
+    """
+    Check if a given directory is empty.
+
+    Args:
+        dir_path (str): Path of the directory to check.
+
+    Returns:
+        bool: True if the directory is empty or does not exist, False otherwise.
+    """
     if os.path.exists(dir_path):
         if len(os.listdir(dir_path)) != 0:
             return False
     return True
 
 def handle_download_page(message):
+    """
+    Handles the downloading of a webpage.
+
+    Extracts 'domain' and 'location' from the message, and downloads the webpage using `pywebcopy`.
+    The function first checks if the target directory is empty before downloading.
+
+    Args:
+        message (dict): A dictionary containing 'domain' and 'location' keys.
+
+    Returns:
+        bool: True if the download is successful, False otherwise.
+    """
 
     if "domain" not in message.keys():
         print("The message doesn't contain domain key")
@@ -41,6 +70,21 @@ def handle_download_page(message):
     return True
 
 def rabbitmq_callback(ch, method, properties, body):
+    """
+    Processes and acknowledges messages from a RabbitMQ queue.
+
+    Attempts to download webpages based on message content, with up to three retries. Acknowledges the message 
+    upon successful download. The message is expected to be a JSON object containing 'domain' and 'location' keys.
+
+    Args:
+        ch (BlockingChannel): The channel associated with the RabbitMQ connection.
+        method (spec.Basic.Deliver): Delivery information of the message.
+        properties (spec.BasicProperties): Message properties.
+        body (bytes): The message body in byte format.
+
+    Returns:
+        None: This function does not return a value.
+    """
     message = json.loads(body)
     print(f" [x] Received {message}")
 
